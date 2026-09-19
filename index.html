@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FormFit — AI Form Coach</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏋️</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ============ NAV ============ -->
+<nav class="nav">
+  <div class="nav__inner">
+    <button class="nav__brand" data-nav="landing">
+      <span class="nav__dot"></span>FormFit
+    </button>
+    <div class="nav__links">
+      <button class="nav__link" data-nav="workout">Train</button>
+      <button class="nav__link" data-nav="dashboard">Progress</button>
+      <button class="btn btn--ghost" id="authTrigger">Sign in</button>
+      <button class="btn btn--primary" id="startTrigger">Start a workout</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ============ LANDING VIEW ============ -->
+<main id="view-landing" class="view view--active">
+
+  <section class="hero">
+    <div class="hero__copy">
+      <p class="hero__kicker">Computer vision, not a mirror</p>
+      <h1 class="hero__title">Your form,<br>scored in<br><em>real time</em>.</h1>
+      <p class="hero__sub">FormFit watches every rep through your webcam, maps 17 points on your body, and tells you — in the moment — whether your squat is safe or your plank is sagging. No sensors, no wearables, just the camera you already have.</p>
+      <div class="hero__cta">
+        <button class="btn btn--primary btn--lg" id="heroStart">Start training <span class="btn__arrow">→</span></button>
+        <button class="btn btn--text" data-nav="dashboard">See how scoring works</button>
+      </div>
+      <div class="hero__stats">
+        <div><strong>4</strong><span>exercises tracked</span></div>
+        <div><strong>17</strong><span>body points read</span></div>
+        <div><strong>0</strong><span>data leaves your browser*</span></div>
+      </div>
+    </div>
+
+    <div class="hero__stage">
+      <div class="skeleton-card">
+        <svg id="skeletonSvg" viewBox="0 0 320 380" class="skeleton-svg" aria-hidden="true">
+          <!-- limb lines -->
+          <g id="skelLines" stroke="var(--mint)" stroke-width="3" stroke-linecap="round" opacity="0.85"></g>
+          <!-- joints -->
+          <g id="skelJoints" fill="var(--mint)"></g>
+        </svg>
+        <div class="skeleton-card__readout">
+          <div class="readout-row"><span>Left knee</span><b id="rdKnee">172°</b></div>
+          <div class="readout-row"><span>Back angle</span><b id="rdBack">168°</b></div>
+          <div class="readout-row good" id="rdVerdict">Form looks clean</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--exercises" id="exercises">
+    <p class="section__kicker">What FormFit checks</p>
+    <h2 class="section__title">Four moves. Every rep counted, every fault flagged.</h2>
+    <div class="exercise-grid">
+
+      <button class="exercise-card" data-exercise="squat">
+        <span class="exercise-card__glyph">◒</span>
+        <h3>Squat</h3>
+        <p>Tracks knee depth, knee cave, and spine angle across every rep.</p>
+        <span class="exercise-card__watch">Watches: hip · knee · ankle</span>
+      </button>
+
+      <button class="exercise-card" data-exercise="pushup">
+        <span class="exercise-card__glyph">◐</span>
+        <h3>Push-up</h3>
+        <p>Measures elbow bend depth and catches hips that sag or pike.</p>
+        <span class="exercise-card__watch">Watches: shoulder · elbow · hip</span>
+      </button>
+
+      <button class="exercise-card" data-exercise="curl">
+        <span class="exercise-card__glyph">◓</span>
+        <h3>Bicep curl</h3>
+        <p>Flags elbow drift and half-reps that never fully extend.</p>
+        <span class="exercise-card__watch">Watches: shoulder · elbow · wrist</span>
+      </button>
+
+      <button class="exercise-card" data-exercise="plank">
+        <span class="exercise-card__glyph">◑</span>
+        <h3>Plank</h3>
+        <p>Holds a live line down your spine — sag or pike and it tells you instantly.</p>
+        <span class="exercise-card__watch">Watches: shoulder · hip · ankle</span>
+      </button>
+
+    </div>
+  </section>
+
+  <section class="section section--how">
+    <p class="section__kicker">How it works</p>
+    <h2 class="section__title">The model runs on your device. Your history lives in your account.</h2>
+    <div class="how-grid">
+      <div class="how-card">
+        <span class="how-card__num">Camera</span>
+        <p>Your browser reads webcam frames locally — video is never uploaded anywhere.</p>
+      </div>
+      <div class="how-card">
+        <span class="how-card__num">Pose model</span>
+        <p>A neural net (MoveNet, via TensorFlow.js) finds 17 joints, 30+ times a second.</p>
+      </div>
+      <div class="how-card">
+        <span class="how-card__num">Angle math</span>
+        <p>FormFit turns joint positions into angles and compares them against safe ranges per exercise.</p>
+      </div>
+      <div class="how-card">
+        <span class="how-card__num">Your account</span>
+        <p>Only the finished summary — reps, score, duration — is saved to your FormFit history.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--cta">
+    <h2 class="section__title section__title--center">Your webcam already knows your squat depth.<br>Let's put it to use.</h2>
+    <button class="btn btn--primary btn--lg" data-nav="workout">Open the trainer <span class="btn__arrow">→</span></button>
+  </section>
+
+  <footer class="footer">
+    <span>FormFit — built for a hackathon on fitness & wellbeing.</span>
+    <span class="footer__note">*Video frames are processed on-device. Only session summaries you save leave the browser, and only to your own account.</span>
+  </footer>
+</main>
+
+<!-- ============ WORKOUT VIEW ============ -->
+<main id="view-workout" class="view">
+  <section class="workout">
+    <aside class="workout__panel">
+      <h2 class="workout__heading">Choose your move</h2>
+      <div class="workout__picker" id="exercisePicker">
+        <button class="picker-btn is-active" data-exercise="squat">Squat</button>
+        <button class="picker-btn" data-exercise="pushup">Push-up</button>
+        <button class="picker-btn" data-exercise="curl">Bicep curl</button>
+        <button class="picker-btn" data-exercise="plank">Plank</button>
+      </div>
+
+      <div class="workout__stat-block">
+        <div class="stat-ring-wrap">
+          <svg class="stat-ring" viewBox="0 0 120 120">
+            <circle class="stat-ring__track" cx="60" cy="60" r="52"></circle>
+            <circle class="stat-ring__fill" id="scoreRing" cx="60" cy="60" r="52"></circle>
+          </svg>
+          <div class="stat-ring__center">
+            <span id="scoreNumber">--</span>
+            <small>form</small>
+          </div>
+        </div>
+        <div class="workout__counter">
+          <span id="repCount">0</span>
+          <small id="repLabel">reps</small>
+        </div>
+      </div>
+
+      <div class="feedback-banner" id="feedbackBanner">
+        <span id="feedbackText">Step into frame to begin</span>
+      </div>
+
+      <div class="workout__controls">
+        <button class="btn btn--primary btn--block" id="cameraToggle">Enable camera</button>
+        <button class="btn btn--ghost btn--block" id="finishBtn" disabled>Finish &amp; save session</button>
+      </div>
+
+      <p class="workout__hint" id="modelStatus">Loading pose model…</p>
+    </aside>
+
+    <div class="workout__stage">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="overlay"></canvas>
+      <div class="workout__placeholder" id="stagePlaceholder">
+        <span class="workout__placeholder-glyph">◐</span>
+        <p>Turn on your camera and step back so your whole body is visible.</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ DASHBOARD VIEW ============ -->
+<main id="view-dashboard" class="view">
+  <section class="dashboard">
+    <div class="dashboard__header">
+      <h2>Your progress</h2>
+      <p id="dashboardSignedOutNote">Sign in to save sessions and see your history here.</p>
+    </div>
+
+    <div class="dashboard__grid">
+      <div class="dash-card dash-card--wide">
+        <h3>Sessions this month</h3>
+        <canvas id="historyChart" height="140"></canvas>
+      </div>
+      <div class="dash-card">
+        <h3>Current streak</h3>
+        <p class="dash-card__big" id="streakValue">0<small>days</small></p>
+      </div>
+      <div class="dash-card">
+        <h3>Average form score</h3>
+        <p class="dash-card__big" id="avgScoreValue">--<small>/100</small></p>
+      </div>
+      <div class="dash-card dash-card--wide">
+        <h3>Recent sessions</h3>
+        <div id="historyList" class="history-list">
+          <p class="history-empty">No sessions yet — finish a workout to see it here.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<!-- ============ AUTH MODAL ============ -->
+<div class="modal-backdrop" id="authModal">
+  <div class="modal">
+    <button class="modal__close" id="authClose">×</button>
+    <p class="section__kicker">Sync your progress</p>
+    <h3 id="authTitle">Sign in to FormFit</h3>
+    <form id="authForm">
+      <label>Email
+        <input type="email" id="authEmail" required autocomplete="email">
+      </label>
+      <label>Password
+        <input type="password" id="authPassword" required autocomplete="current-password" minlength="6">
+      </label>
+      <p class="auth-error" id="authError"></p>
+      <button type="submit" class="btn btn--primary btn--block" id="authSubmit">Sign in</button>
+    </form>
+    <button class="btn btn--text" id="authSwitch">Need an account? Sign up</button>
+    <button class="btn btn--text" id="authGuest">Continue without an account</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/pose-detection@2.1.3/dist/pose-detection.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+
+<script src="js/config.js"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/exercises.js"></script>
+<script src="js/pose-engine.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
